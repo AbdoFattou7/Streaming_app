@@ -12,8 +12,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(centerTitle: true, title: Text("Egybest")),
-        body: Center(child: Text("This is the first page")),
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text("Egybest", style: TextStyle(fontWeight: FontWeight.bold)),
+          elevation: 1,
+          backgroundColor: const Color.fromARGB(255, 249, 242, 140),
+        ),
+        body: Center(
+          child: Text("This is the first page", style: TextStyle(fontSize: 30)),
+        ),
       ),
     );
   }
