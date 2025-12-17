@@ -19,13 +19,75 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+
+  // List of screens for the Bottom Navigation Bar
+  final List<Widget> _screens = [
+    const HomeContent(), // Your original movie list UI
+    const Center(
+      child: Text(
+        "Search Page",
+        style: TextStyle(color: Colors.white, fontSize: 20),
+      ),
+    ),
+    const Center(
+      child: Text(
+        "Downloads Page",
+        style: TextStyle(color: Colors.white, fontSize: 20),
+      ),
+    ),
+    const AccountPage(), // Your account page
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Simplified for a cleaner look
+      // This displays the screen corresponding to the current index
+      body: _screens[_selectedIndex],
+
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.black,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.download),
+            label: 'Downloads',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'More'),
+        ],
+      ),
+    );
+  }
+}
+
+// --- YOUR ORIGINAL HOME UI MOVED HERE ---
+class HomeContent extends StatelessWidget {
+  const HomeContent({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 15, 15, 15),
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
@@ -51,94 +113,41 @@ class HomePage extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.black,
       ),
-      drawer: const Drawer(),
+      drawer: Drawer(child: ListView()),
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: SingleChildScrollView(
+          // Added to prevent overflow if list is long
           child: Column(
             children: [
-              // Popular Section
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Popular on Netflix",
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Seeallpage(),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      "see all",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
+              // POPULAR SECTION
+              _buildSectionHeader(
+                context,
+                "Popular on Netflix",
+                const Seeallpage(),
               ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    _moviePoster('assets/images/money heist.jpg'),
-                    _moviePoster('assets/images/stranger things.jpg'),
-                    _moviePoster('assets/images/squid game.jpg'),
-                    _moviePoster('assets/images/dark.jpg'),
-                    _moviePoster('assets/images/breaking bad.jpg'),
-                  ],
-                ),
-              ),
+              _buildMovieRow([
+                'assets/images/money heist.jpg',
+                'assets/images/stranger things.jpg',
+                'assets/images/squid game.jpg',
+                'assets/images/dark.jpg',
+                'assets/images/breaking bad.jpg',
+              ]),
               const SizedBox(height: 30),
-              // Trending Section
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Trending Now",
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const TrendingSeeallpage(),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      "see all",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
+              // TRENDING SECTION
+              _buildSectionHeader(
+                context,
+                "Trending Now",
+                const TrendingSeeallpage(),
               ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    _moviePoster('assets/images/behind.jpg'),
-                    _moviePoster('assets/images/missing.jpg'),
-                    _moviePoster('assets/images/broadchurch.jpg'),
-                    _moviePoster('assets/images/the asset.jpg'),
-                    _moviePoster('assets/images/the believers.jpg'),
-                    _moviePoster('assets/images/zero day.jpg'),
-                  ],
-                ),
-              ),
+              _buildMovieRow([
+                'assets/images/behind.jpg',
+                'assets/images/missing.jpg',
+                'assets/images/broadchurch.jpg',
+                'assets/images/the asset.jpg',
+                'assets/images/the believers.jpg',
+                'assets/images/zero day.jpg',
+              ]),
             ],
           ),
         ),
@@ -146,11 +155,56 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // Helper widget to reduce code repetition and errors
-  Widget _moviePoster(String path) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8.0),
-      child: Image.asset(path, width: 100, height: 150, fit: BoxFit.cover),
+  // Helper to build the Title + See All button
+  Widget _buildSectionHeader(
+    BuildContext context,
+    String title,
+    Widget destination,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 15,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => destination),
+            );
+          },
+          child: const Text("see all", style: TextStyle(color: Colors.white)),
+        ),
+      ],
+    );
+  }
+
+  // Helper to build the horizontal scrollable row
+  Widget _buildMovieRow(List<String> images) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children:
+            images
+                .map(
+                  (path) => Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Image.asset(
+                      path,
+                      width: 100,
+                      height: 150,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                )
+                .toList(),
+      ),
     );
   }
 }
