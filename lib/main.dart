@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:oss_project/accountpage.dart';
+import 'package:oss_project/downloads_page.dart';
 import 'package:oss_project/search_page.dart';
 import 'package:oss_project/see_all_page.dart';
 import 'package:oss_project/trending_seeallpage.dart';
@@ -34,13 +35,8 @@ class _HomePageState extends State<HomePage> {
   // List of screens for the Bottom Navigation Bar
   final List<Widget> _screens = [
     const HomeContent(),
-    const SearchPage(), // Change the first placeholder to your actual SearchPage
-    const Center(
-      child: Text(
-        "Downloads Page",
-        style: TextStyle(color: Colors.white, fontSize: 20),
-      ),
-    ),
+    const SearchPage(),
+    const DownloadsPage(), // Update this line
     const AccountPage(),
   ];
 
