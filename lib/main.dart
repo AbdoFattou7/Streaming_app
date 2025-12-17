@@ -113,7 +113,47 @@ class HomeContent extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.black,
       ),
-      drawer: Drawer(child: ListView()),
+      drawer: Drawer(
+        backgroundColor: Colors.black, // Keeps the Netflix dark theme
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            // Drawer Header
+            DrawerHeader(
+              decoration: const BoxDecoration(color: Colors.black),
+              child: Center(
+                child: Image.asset(
+                  'assets/images/Netflix logo.png',
+                  height: 50,
+                ),
+              ),
+            ),
+            // Netflix Tile
+            ListTile(
+              leading: const Icon(Icons.movie, color: Colors.red),
+              title: const Text(
+                "Netflix",
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+              onTap: () {
+                Navigator.pop(context); // Closes the drawer
+              },
+            ),
+            // Netflix Kids Tile
+            ListTile(
+              leading: const Icon(Icons.child_care, color: Colors.orange),
+              title: const Text(
+                "Netflix Kids",
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+              onTap: () {
+                // You can navigate to a kids-specific page here later
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: SingleChildScrollView(
